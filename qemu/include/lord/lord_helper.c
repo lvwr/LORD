@@ -39,7 +39,7 @@ trace_entry volatile *sheph_sh = NULL;
 struct sembuf lock;
 int semid;
 
-#define MAX_SHARED 16384
+#define MAX_SHARED 8192
 
 #else
 int tb_counter = 0;

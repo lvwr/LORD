@@ -10,7 +10,7 @@
 #include "lord/lord_handler.h"
 #include "lord/lord_helper.h"
 
-#define SHM_SIZE 16384
+#define SHM_SIZE 8192
 
 #ifdef SHEPH_SHARED
 extern trace_entry *sheph_sh;
