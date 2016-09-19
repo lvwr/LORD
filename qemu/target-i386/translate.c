@@ -4945,6 +4945,7 @@ static target_ulong disas_insn(CPUX86State *env, DisasContext *s,
             tcg_gen_movi_tl(cpu_T[1], next_eip);
             gen_push_v(s, cpu_T[1]);
             gen_op_jmp_v(cpu_T[0]);
+            gen_helper_trace_call_ev(tcg_const_i64(env->eip), cpu_T[0], tcg_const_i64(next_eip));
             gen_eob(s);
             break;
         case 3: /* lcall Ev */
@@ -6381,6 +6382,7 @@ static target_ulong disas_insn(CPUX86State *env, DisasContext *s,
         /* control */
     case 0xc2: /* ret im */
         val = cpu_ldsw_code(env, s->pc);
+        gen_helper_trace_ret_im(tcg_const_i64(env->eip), tcg_const_i64(s->pc));
         s->pc += 2;
         ot = gen_pop_T0(s);
         gen_stack_update(s, val + (1 << ot));
@@ -6390,6 +6392,7 @@ static target_ulong disas_insn(CPUX86State *env, DisasContext *s,
         break;
     case 0xc3: /* ret */
         ot = gen_pop_T0(s);
+        gen_helper_trace_ret(tcg_const_i64(env->eip), cpu_T[0]);
         gen_pop_update(s, ot);
         /* Note that gen_pop_T0 uses a zero-extending load.  */
         gen_op_jmp_v(cpu_T[0]);
@@ -6459,6 +6462,7 @@ static target_ulong disas_insn(CPUX86State *env, DisasContext *s,
             } else if (!CODE64(s)) {
                 tval &= 0xffffffff;
             }
+            gen_helper_trace_call_im(tcg_const_i64(env->eip), tcg_const_i64(tval), tcg_const_i64(next_eip));
             tcg_gen_movi_tl(cpu_T[0], next_eip);
             gen_push_v(s, cpu_T[0]);
             gen_jmp(s, tval);

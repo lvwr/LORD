@@ -18,6 +18,11 @@ DEF_HELPER_2(divq_EAX, void, env, tl)
 DEF_HELPER_2(idivq_EAX, void, env, tl)
 #endif
 
+DEF_HELPER_3(trace_call_ev, void, tl, tl, tl)
+DEF_HELPER_3(trace_call_im, void, tl, tl, tl)
+DEF_HELPER_2(trace_ret_im, void, tl, tl)
+DEF_HELPER_2(trace_ret, void, tl, tl)
+
 DEF_HELPER_2(aam, void, env, int)
 DEF_HELPER_2(aad, void, env, int)
 DEF_HELPER_1(aaa, void, env)

@@ -35,6 +35,8 @@
 #include "qemu/envlist.h"
 #include "elf.h"
 
+#include "lord/lord_handler.h"
+
 char *exec_path;
 
 int singlestep;
@@ -3677,6 +3679,8 @@ static const struct qemu_argument arg_table[] = {
      "",           "log system calls"},
     {"version",    "QEMU_VERSION",     false, handle_arg_version,
      "",           "display version information and exit"},
+    {"sh",         "",                 true,  handle_arg_sh,
+     "",           "enable program shepherding"},
     {NULL, NULL, false, NULL, NULL, NULL}
 };
 
