@@ -66,11 +66,18 @@ g++ lord-stack64.cpp -o stack
 cd LORD/qemu/x86\_64-linux-user/
 ./qemu-x86\_64 -sh <lord-binary> <binary to be verified>
 
+## License
+
+While QEMU holds its own licensing, all other source files in LORD are relased
+under GNU GPLv3 License. Licensing info can be found at LORD/lord/LICENSE
+
 ## What else?
 
 Not much else, enjoy :-)
 
 ## Authors:
-João Moreira - joao.moreira@lsc.ic.unicamp.br - @lvwr
+João Moreira - joao.moreira@lsc.ic.unicamp.br
+
 Lucas Teixeira -
+
 Sandro Rigo - sandro@ic.unicamp.br
