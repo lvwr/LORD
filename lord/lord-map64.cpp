@@ -7,14 +7,13 @@
 #include <cstring>
 using namespace std;
 
-#define OPC_VALIDO (opcode == 0 || opcode == 1 || opcode == 2 || opcode == 3 || opcode == 4 || opcode == 5 || opcode == 6)
+#define OPC_VALID (opcode == 0 || opcode == 1 || opcode == 2 || opcode == 3 || opcode == 4 || opcode == 5 || opcode == 6)
 #define MAX_OPCODE 7
 
-/// Defs
+// Defs
 typedef unsigned long int uInt64;
 
-
-/// Prototypes
+// Prototypes
 bool handleMessage();
 bool handleCallImm();
 bool handleCallEv();
@@ -23,119 +22,119 @@ bool handleRet();
 
 uInt64 opcode;
 
-/// Global vars
+// Global vars
 //map<uInt64, bool> monitorTable;
 map<uInt64, bool> monitorTable;
 uInt64 histogram[MAX_OPCODE];
 
 typedef struct{
-	uInt64 op;
-	uInt64 exp_ret;
+  uInt64 op;
+  uInt64 exp_ret;
 } trace_entry;
 
 typedef struct{
-	uInt64 op;
-	uInt64 target;
+  uInt64 op;
+  uInt64 target;
 } ret_entry;
 
 ret_entry ret_buf;
 trace_entry call_buf;
 int warnings = 0;
 
-/// Main entry point
+// Main entry point
 int main(int argc, char *argv[]) {
-  int lidos;
+  int received;
 
-	printf("Lord initializing...\n");
+  printf("Lord initializing...\n");
 
   while ( true ) {
 
-	lidos = fread(&opcode, sizeof(opcode), 1, stdin);
+    received = fread(&opcode, sizeof(opcode), 1, stdin);
 
-	if (lidos == 0) {
-		break;
-	}
-  switch (opcode) {
-  /// Message
-	case 0:
-  	//printf("message\n");
-		histogram[0]++;
-	  handleMessage();
-  	break;
+    if (received == 0) {
+      break;
+    }
+    switch (opcode) {
+      /// Message
+    case 0:
+      //printf("message\n");
+      histogram[0]++;
+      handleMessage();
+      break;
 
-  /// Call immediate
-	case 1:
-		//printf("opcode 1\n");
-		histogram[1]++;
-	  handleCallImm();
-  	break;
+      /// Call immediate
+    case 1:
+      //printf("opcode 1\n");
+      histogram[1]++;
+      handleCallImm();
+      break;
 
-	case 5:
-  	//printf("opcode 5\n");
-		histogram[5]++;
-    handleCallImm();
-    break;
+    case 5:
+      //printf("opcode 5\n");
+      histogram[5]++;
+      handleCallImm();
+      break;
 
-  /// Call Ev
-  case 2:
-		//printf("opcode 2\n");
-		histogram[2]++;
-    handleCallEv();
-    break;
+      /// Call Ev
+    case 2:
+      //printf("opcode 2\n");
+      histogram[2]++;
+      handleCallEv();
+      break;
 
-	case 6:
-  	//printf("opcode 6\n");
-		histogram[6]++;
-    handleCallEv();
-    break;
+    case 6:
+      //printf("opcode 6\n");
+      histogram[6]++;
+      handleCallEv();
+      break;
 
-  /// Ret immediate
-  case 3:
-    //printf("ret3\n");
-		histogram[3]++;
-    handleRetImm();
-    break;
+      /// Ret immediate
+    case 3:
+      //printf("ret3\n");
+      histogram[3]++;
+      handleRetImm();
+      break;
 
-  /// Ret
-  case 4:
-    //printf("ret4\n");
-		histogram[4]++;
-    handleRet();
-    break;
+      /// Ret
+    case 4:
+      //printf("ret4\n");
+      histogram[4]++;
+      handleRet();
+      break;
 
-	default:
-  	printf("Warning: Unknown opcode %lx\n", opcode);
-    break;
-  	}
-	}
+    default:
+      printf("Warning: Unknown opcode %lx\n", opcode);
+      break;
+    }
+  }
 
-	printf("HISTOGRAM\n-\n");
+  printf("HISTOGRAM\n-\n");
 
-	for (int i=0; i<MAX_OPCODE; i++) {
-		printf("%d, %lu\n", i, histogram[i]);
-	}
-	printf("-\nTotals:\n\n");
-	printf("Rets: %ld\n", histogram[3] + histogram[4]);
-	printf("Calls: %ld\n", histogram[1] + histogram[2]);
-	printf("Warnings: %d\n", warnings);
+  for (int i=0; i<MAX_OPCODE; i++) {
+    printf("%d, %lu\n", i, histogram[i]);
+  }
+  printf("-\nTotals:\n\n");
+  printf("Rets: %ld\n", histogram[3] + histogram[4]);
+  printf("Calls: %ld\n", histogram[1] + histogram[2]);
+  printf("Warnings: %d\n", warnings);
 
-    return 0;
+  return 0;
 }
 
 
 bool handleMessage() {
   char message[100];
 
-	/// Read the ','
+  /// Read the ','
   fgets(message, 100, stdin);
 
-	if (message[strlen(message)-1] != '\n') {
-		printf("didn't read the entire message\n");
-		//scanf("%*[^\n]\n");
-	}
-	else {
-		message[strlen(message)-1] = '\0';
-	}
+  if (message[strlen(message)-1] != '\n') {
+    printf("didn't read the entire message\n");
+    //scanf("%*[^\n]\n");
+  }
+  else {
+    message[strlen(message)-1] = '\0';
+  }
 
   printf("Lord: %s\n", message);
 
@@ -144,58 +143,62 @@ bool handleMessage() {
 
 bool handleCallImm() {
   fread(&call_buf.exp_ret,sizeof(uInt64),1,stdin);
-	//printf("call: %lx\n", call_buf.exp_ret);
-	monitorTable[call_buf.exp_ret] = true;
+  //printf("call: %lx\n", call_buf.exp_ret);
+  monitorTable[call_buf.exp_ret] = true;
 
   return true;
 }
 
 bool handleCallEv() {
-	fread(&call_buf.exp_ret,sizeof(uInt64),1,stdin);
-	//printf("call: %lx\n", call_buf.exp_ret);
+  fread(&call_buf.exp_ret,sizeof(uInt64),1,stdin);
+  //printf("call: %lx\n", call_buf.exp_ret);
   monitorTable[call_buf.exp_ret] = true;
 
   return true;
 }
 
 bool handleRetImm() {
-	fread(&ret_buf.target,sizeof(uInt64),1,stdin);
-	//printf("ret: %lx\n", ret_buf.target);
-	map<uInt64, bool>::iterator targetEntry = monitorTable.find(ret_buf.target);
+  fread(&ret_buf.target,sizeof(uInt64),1,stdin);
+  //printf("ret: %lx\n", ret_buf.target);
+  map<uInt64, bool>::iterator targetEntry = monitorTable.find(ret_buf.target);
 
   if(monitorTable.empty()){
-		printf("Warning: Return Monitor Table is empty. RET returning to address 0x%lx\n", ret_buf.target);
-		warnings++;
-		return false;
-	}
+    printf("Warning: Return Monitor Table is empty. RET returning to address\
+           0x%lx\n", ret_buf.target);
+    warnings++;
+    return false;
+  }
 
-	if(targetEntry == monitorTable.end()){
-		printf("Warning: RET returned to unexpected address at 0x%lx\n", ret_buf.target);
-		warnings++;
-		return false;
-	} else {
-		//monitorTable.erase(targetEntry);
-		return true;
-	}
+  if(targetEntry == monitorTable.end()){
+    printf("Warning: RET returned to unexpected address at 0x%lx\n",
+           ret_buf.target);
+    warnings++;
+    return false;
+  } else {
+    //monitorTable.erase(targetEntry);
+    return true;
+  }
 }
 
 bool handleRet() {
-	fread(&ret_buf.target,sizeof(uInt64),1,stdin);
-	//printf("ret: %lx\n", ret_buf.target);
-	map<uInt64, bool>::iterator targetEntry = monitorTable.find(ret_buf.target);
+  fread(&ret_buf.target,sizeof(uInt64),1,stdin);
+  //printf("ret: %lx\n", ret_buf.target);
+  map<uInt64, bool>::iterator targetEntry = monitorTable.find(ret_buf.target);
 
-	if(monitorTable.empty()){
-		printf("Warning: Return Monitor Table is empty. RET returning to address 0x%lx\n", ret_buf.target);
-		warnings++;
-		return false;
-	}
+  if(monitorTable.empty()){
+    printf("Warning: Return Monitor Table is empty. RET returning to address\
+           0x%lx\n", ret_buf.target);
+    warnings++;
+    return false;
+  }
 
-	if(targetEntry == monitorTable.end()){	
-		printf("Warning: RET returned to unexpected address 0x%lx\n", ret_buf.target);
-		warnings++;
-		return false;
-	} else {
-		//monitorTable.erase(targetEntry);
-		return true;
-	}
+  if(targetEntry == monitorTable.end()){
+    printf("Warning: RET returned to unexpected address 0x%lx\n",
+           ret_buf.target);
+    warnings++;
+    return false;
+  } else {
+    //monitorTable.erase(targetEntry);
+    return true;
+  }
 }
