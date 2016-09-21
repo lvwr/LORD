@@ -78,6 +78,6 @@ Not much else, enjoy :-)
 ## Authors:
 João Moreira - joao.moreira@lsc.ic.unicamp.br
 
-Lucas Teixeira -
+Lucas Teixeira - lucas@fastmail.nl
 
 Sandro Rigo - sandro@ic.unicamp.br
